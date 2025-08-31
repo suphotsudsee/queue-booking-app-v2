@@ -87,16 +87,7 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Add Service Link */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">จองคิวออนไลน์</h1>
-        <a 
-          href="/add-service" 
-          className="btn bg-blue-600 text-white hover:bg-blue-700"
-        >
-          + เพิ่มบริการ
-        </a>
-      </div>
+
 
       {/* เลือกบริการ */}
       <div className="card">
