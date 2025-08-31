@@ -888,40 +888,52 @@ export default function Admin() {
                 {staff.length === 0 ? (
                   <p className="text-gray-500 text-center py-8">ยังไม่มีพนักงาน</p>
                 ) : (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {staff.map((person) => (
-                      <div
-                        key={person.id}
-                        className="flex justify-between items-center p-4 border rounded-lg bg-white"
-                      >
-                        <div className="flex-1">
-                          <div className="font-medium text-lg">{person.name}</div>
-                          {person.phone && (
-                            <div className="text-gray-600 text-sm">เบอร์โทร: {person.phone}</div>
-                          )}
-                          {person.email && (
-                            <div className="text-gray-600 text-sm">อีเมล: {person.email}</div>
-                          )}
-                          <div className="text-sm text-gray-500 mt-1">
-                            สถานะ: {person.is_active ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน"}
-                          </div>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
-                            onClick={() => startEditStaff(person)}
-                          >
-                            แก้ไข
-                          </button>
-                          <button
-                            className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
-                            onClick={() => deleteStaff(person.id)}
-                          >
-                            ลบ
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100 text-left">
+                          <th className="p-2 border">ชื่อพนักงาน</th>
+                          <th className="p-2 border">เบอร์โทร</th>
+                          <th className="p-2 border">อีเมล</th>
+                          <th className="p-2 border">สถานะ</th>
+                          <th className="p-2 border">การจัดการ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {staff.map((person) => (
+                          <tr key={person.id} className="bg-white">
+                            <td className="p-2 border">{person.name}</td>
+                            <td className="p-2 border">{person.phone || "-"}</td>
+                            <td className="p-2 border">{person.email || "-"}</td>
+                            <td className="p-2 border">
+                              <span
+                                className={
+                                  person.is_active ? "text-green-600" : "text-red-600"
+                                }
+                              >
+                                {person.is_active ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน"}
+                              </span>
+                            </td>
+                            <td className="p-2 border">
+                              <div className="flex space-x-2">
+                                <button
+                                  className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
+                                  onClick={() => startEditStaff(person)}
+                                >
+                                  แก้ไข
+                                </button>
+                                <button
+                                  className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
+                                  onClick={() => deleteStaff(person.id)}
+                                >
+                                  ลบ
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>
