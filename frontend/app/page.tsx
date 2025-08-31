@@ -30,13 +30,13 @@ export default function Home() {
   // แก้ไขการเรียก slots API
   useEffect(() => {
     if (!date || !selectedService) return;
-    axios.get(`${API}/appointments/slots`, { 
-      params: { 
+    axios.get(`${API}/appointments/slots`, {
+      params: {
         d: date,
-        service_id: selectedService.id 
-      } 
+        service_id: selectedService.id
+      }
     })
-      .then(res => setSlots(res.data.slots || []))
+      .then(res => setSlots((res.data.slots || []).filter((s: Slot) => s.available)))
       .catch(() => setSlots([]));
   }, [date, selectedService]);
 
@@ -68,13 +68,13 @@ export default function Home() {
       setShowSuccessModal(true);
       setSelected(null); setName(""); setPhone(""); setNote("");
       // refresh slots
-      const s = await axios.get(`${API}/appointments/slots`, { 
-        params: { 
+      const s = await axios.get(`${API}/appointments/slots`, {
+        params: {
           d: date,
-          service_id: selectedService.id 
-        } 
+          service_id: selectedService.id
+        }
       });
-      setSlots(s.data.slots || []);
+      setSlots((s.data.slots || []).filter((slot: Slot) => slot.available));
     } catch(e: any) {
       setMessage(e?.response?.data?.detail || "เกิดข้อผิดพลาด");
     }
