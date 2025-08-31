@@ -36,6 +36,13 @@ export default function Admin() {
   const [newServiceDuration, setNewServiceDuration] = useState(30);
   const [newServicePrice, setNewServicePrice] = useState(0);
 
+  // State สำหรับฟอร์มแก้ไขบริการ
+  const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
+  const [editServiceName, setEditServiceName] = useState("");
+  const [editServiceDescription, setEditServiceDescription] = useState("");
+  const [editServiceDuration, setEditServiceDuration] = useState(30);
+  const [editServicePrice, setEditServicePrice] = useState(0);
+
   // State สำหรับฟอร์มเพิ่มพนักงาน
   const [newStaffName, setNewStaffName] = useState("");
   const [newStaffPhone, setNewStaffPhone] = useState("");
@@ -222,6 +229,14 @@ export default function Admin() {
       setMsg(`❌ ${errorMsg}`);
       console.error("อัปเดตบริการล้มเหลว:", errorMsg);
     }
+  };
+
+  const startEditService = (service: any) => {
+    setEditingServiceId(service.id);
+    setEditServiceName(service.name);
+    setEditServiceDescription(service.description || "");
+    setEditServiceDuration(service.duration_minutes);
+    setEditServicePrice(service.price || 0);
   };
 
   const deleteService = async (id: number) => {
@@ -615,14 +630,78 @@ export default function Admin() {
                     step="10"
                   />
                 </div>
-                <button 
-                  className="btn bg-blue-600 text-white hover:bg-blue-700" 
+                <button
+                  className="btn bg-blue-600 text-white hover:bg-blue-700"
                   onClick={createService}
                   disabled={!newServiceName.trim()}
                 >
                   เพิ่มบริการ
                 </button>
               </div>
+
+              {/* ฟอร์มแก้ไขบริการ */}
+              {editingServiceId && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h3 className="text-lg font-medium mb-4">แก้ไขบริการ</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="ชื่อบริการ"
+                      value={editServiceName}
+                      onChange={(e) => setEditServiceName(e.target.value)}
+                    />
+                    <input
+                      type="number"
+                      className="input"
+                      placeholder="ระยะเวลา (นาที)"
+                      value={editServiceDuration}
+                      onChange={(e) => setEditServiceDuration(parseInt(e.target.value) || 0)}
+                      min="15"
+                      step="15"
+                    />
+                    <input
+                      type="number"
+                      className="input"
+                      placeholder="ราคา (บาท)"
+                      value={editServicePrice}
+                      onChange={(e) => setEditServicePrice(parseFloat(e.target.value) || 0)}
+                      min="0"
+                      step="10"
+                    />
+                  </div>
+                  <textarea
+                    className="input mb-4"
+                    placeholder="รายละเอียดบริการ"
+                    value={editServiceDescription}
+                    onChange={(e) => setEditServiceDescription(e.target.value)}
+                  />
+                  <div className="flex space-x-2">
+                    <button
+                      className="btn bg-blue-600 text-white hover:bg-blue-700"
+                      onClick={() => {
+                        updateService(editingServiceId!, {
+                          name: editServiceName,
+                          description: editServiceDescription,
+                          duration_minutes: editServiceDuration,
+                          price: editServicePrice,
+                          is_active: true,
+                        });
+                        setEditingServiceId(null);
+                      }}
+                      disabled={!editServiceName.trim()}
+                    >
+                      บันทึก
+                    </button>
+                    <button
+                      className="btn border"
+                      onClick={() => setEditingServiceId(null)}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* รายการบริการที่มีอยู่ */}
               <div className="space-y-4">
@@ -642,12 +721,9 @@ export default function Admin() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <button 
+                        <button
                           className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
-                          onClick={() => {
-                            // TODO: Implement edit functionality
-                            setMsg("ฟีเจอร์แก้ไขจะมาเร็วๆ นี้");
-                          }}
+                          onClick={() => startEditService(service)}
                         >
                           แก้ไข
                         </button>
