@@ -64,18 +64,24 @@ def get_slots(
                 StaffSchedule.is_working == True
             )
         ).all()
-        
+
+        # ดึงข้อมูล business hours เพื่อใช้กำหนดความยาวของสเต็ป
+        bh = session.exec(select(BusinessHours).where(BusinessHours.weekday == weekday)).first()
+        if not bh:
+            return {"date": d.isoformat(), "slots": [], "message": f"No business hours for weekday {weekday}"}
+
         if not staff_schedules:
             return {"date": d.isoformat(), "slots": [], "message": f"No staff schedule for weekday {weekday}"}
-        
+
         # สร้าง slots จากตารางเวลาของพนักงาน
         slots = []
+        step = timedelta(minutes=bh.slot_minutes)
+        service_duration = timedelta(minutes=service.duration_minutes)
         for schedule in staff_schedules:
             start = datetime.combine(d, schedule.open_time)
             end = datetime.combine(d, schedule.close_time)
-            slot_duration = timedelta(minutes=service.duration_minutes)
-            
-            # หาคิวที่มีอยู่แล้ว
+
+            # หาคิวที่มีอยู่แล้วของพนักงานคนนี้
             existing = session.exec(
                 select(Appointment).where(
                     Appointment.date == d,
@@ -83,18 +89,18 @@ def get_slots(
                     Appointment.status != "canceled"
                 )
             ).all()
-            
+
             t = start
-            while t + slot_duration <= end:
+            while t + service_duration <= end:
                 slot_start = t.time()
-                slot_end = (t + slot_duration).time()
-                
+                slot_end = (t + service_duration).time()
+
                 # ตรวจสอบว่าช่วงเวลานี้ว่างหรือไม่
                 conflict = any(
-                    _overlap(slot_start, slot_end, ap.start_time, ap.end_time) 
+                    _overlap(slot_start, slot_end, ap.start_time, ap.end_time)
                     for ap in existing
                 )
-                
+
                 slots.append({
                     "start": slot_start.strftime("%H:%M"),
                     "end": slot_end.strftime("%H:%M"),
@@ -103,8 +109,8 @@ def get_slots(
                     "service_id": service_id,
                     "duration_minutes": service.duration_minutes
                 })
-                
-                t += slot_duration
+
+                t += step
         
         return {
             "date": d.isoformat(), 
