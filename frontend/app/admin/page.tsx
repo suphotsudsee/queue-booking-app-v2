@@ -430,7 +430,7 @@ export default function Admin() {
                     ออกจากระบบ
                   </button>
                 </div>
-                <div className="grid md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <input className="input" type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} />
                   <input className="input" type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} />
                   <button className="btn border" onClick={load}>โหลดรายการ</button>
@@ -486,7 +486,7 @@ export default function Admin() {
               </div>
               <div className="space-y-4">
                 {businessHours.map((hour, index) => (
-                  <div key={index} className="grid grid-cols-4 gap-3 items-center">
+                  <div key={index} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
                     <div>
                       <label className="block text-sm font-medium mb-1">
                         {["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์"][hour.weekday]}
@@ -543,7 +543,7 @@ export default function Admin() {
                 </button>
               </div>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input 
                     type="date" 
                     className="input" 

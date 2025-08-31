@@ -92,7 +92,7 @@ export default function Home() {
       {/* เลือกบริการ */}
       <div className="card">
         <h2 className="text-xl font-semibold mb-4">เลือกบริการ</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {services.map((service) => (
             <button
               key={service.id}
@@ -118,7 +118,7 @@ export default function Home() {
       {date && selectedService && (
         <div className="card">
           <h2 className="text-xl font-semibold mb-4">ช่วงเวลาที่ว่าง</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {slots.map((s, i) => (
               <button key={i}
                 disabled={!s.available}
