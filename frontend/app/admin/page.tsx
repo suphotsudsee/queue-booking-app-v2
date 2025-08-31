@@ -29,7 +29,11 @@ export default function Admin() {
   const [holidays, setHolidays] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [staff, setStaff] = useState<any[]>([]);
-  
+
+  // Modal states
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
+
   // State สำหรับฟอร์มเพิ่มบริการ
   const [newServiceName, setNewServiceName] = useState("");
   const [newServiceDescription, setNewServiceDescription] = useState("");
@@ -598,8 +602,8 @@ export default function Admin() {
               {/* แสดงข้อความ */}
               {msg && (
                 <div className={`mb-4 p-3 rounded-lg ${
-                  msg.includes("✅") 
-                    ? "bg-green-50 text-green-800 border border-green-200" 
+                  msg.includes("✅")
+                    ? "bg-green-50 text-green-800 border border-green-200"
                     : msg.includes("❌")
                     ? "bg-red-50 text-red-800 border border-red-200"
                     : "bg-blue-50 text-blue-800 border border-blue-200"
@@ -608,51 +612,82 @@ export default function Admin() {
                 </div>
               )}
               
-              {/* ฟอร์มเพิ่มบริการใหม่ */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <h3 className="text-lg font-medium mb-4">เพิ่มบริการใหม่</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <input 
-                    type="text" 
-                    className="input" 
-                    placeholder="ชื่อบริการ (เช่น: ตัดผม, สระไดร์)" 
-                    value={newServiceName}
-                    onChange={(e) => setNewServiceName(e.target.value)}
-                  />
-                  <input 
-                    type="text" 
-                    className="input" 
-                    placeholder="รายละเอียดบริการ" 
-                    value={newServiceDescription}
-                    onChange={(e) => setNewServiceDescription(e.target.value)}
-                  />
-                  <input 
-                    type="number" 
-                    className="input" 
-                    placeholder="ระยะเวลา (นาที)" 
-                    value={newServiceDuration}
-                    onChange={(e) => setNewServiceDuration(parseInt(e.target.value) || 30)}
-                    min="15"
-                    step="15"
-                  />
-                  <input 
-                    type="number" 
-                    className="input" 
-                    placeholder="ราคา (บาท)" 
-                    value={newServicePrice}
-                    onChange={(e) => setNewServicePrice(parseFloat(e.target.value) || 0)}
-                    min="0"
-                    step="10"
-                  />
-                </div>
+              {/* ปุ่มเปิด modal เพิ่มบริการ */}
+              <div className="mb-6">
                 <button
                   className="btn bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={createService}
-                  disabled={!newServiceName.trim()}
+                  onClick={() => setShowAddServiceModal(true)}
                 >
                   เพิ่มบริการ
                 </button>
               </div>
+
+              {/* Modal เพิ่มบริการ */}
+              {showAddServiceModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                  <div className="bg-white p-6 rounded-lg w-full max-w-lg">
+                    <h3 className="text-lg font-medium mb-4">เพิ่มบริการใหม่</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder="ชื่อบริการ (เช่น: ตัดผม, สระไดร์)"
+                        value={newServiceName}
+                        onChange={(e) => setNewServiceName(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder="รายละเอียดบริการ"
+                        value={newServiceDescription}
+                        onChange={(e) => setNewServiceDescription(e.target.value)}
+                      />
+                      <input
+                        type="number"
+                        className="input"
+                        placeholder="ระยะเวลา (นาที)"
+                        value={newServiceDuration}
+                        onChange={(e) => setNewServiceDuration(parseInt(e.target.value) || 30)}
+                        min="15"
+                        step="15"
+                      />
+                      <input
+                        type="number"
+                        className="input"
+                        placeholder="ราคา (บาท)"
+                        value={newServicePrice}
+                        onChange={(e) => setNewServicePrice(parseFloat(e.target.value) || 0)}
+                        min="0"
+                        step="10"
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        className="btn bg-blue-600 text-white hover:bg-blue-700"
+                        onClick={async () => {
+                          await createService();
+                          setShowAddServiceModal(false);
+                        }}
+                        disabled={!newServiceName.trim()}
+                      >
+                        บันทึก
+                      </button>
+                      <button
+                        className="btn border"
+                        onClick={() => {
+                          setShowAddServiceModal(false);
+                          setNewServiceName("");
+                          setNewServiceDescription("");
+                          setNewServiceDuration(30);
+                          setNewServicePrice(0);
+                        }}
+                      >
+                        ยกเลิก
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* ฟอร์มแก้ไขบริการ */}
               {editingServiceId && (
@@ -784,8 +819,8 @@ export default function Admin() {
               {/* แสดงข้อความ */}
               {msg && (
                 <div className={`mb-4 p-3 rounded-lg ${
-                  msg.includes("✅") 
-                    ? "bg-green-50 text-green-800 border border-green-200" 
+                  msg.includes("✅")
+                    ? "bg-green-50 text-green-800 border border-green-200"
                     : msg.includes("❌")
                     ? "bg-red-50 text-red-800 border border-red-200"
                     : "bg-blue-50 text-blue-800 border border-blue-200"
@@ -793,41 +828,71 @@ export default function Admin() {
                   {msg}
                 </div>
               )}
-              
-              {/* ฟอร์มเพิ่มพนักงานใหม่ */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <h3 className="text-lg font-medium mb-4">เพิ่มพนักงานใหม่</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <input 
-                    type="text" 
-                    className="input" 
-                    placeholder="ชื่อพนักงาน" 
-                    value={newStaffName}
-                    onChange={(e) => setNewStaffName(e.target.value)}
-                  />
-                  <input 
-                    type="text" 
-                    className="input" 
-                    placeholder="เบอร์โทร" 
-                    value={newStaffPhone}
-                    onChange={(e) => setNewStaffPhone(e.target.value)}
-                  />
-                  <input 
-                    type="email" 
-                    className="input" 
-                    placeholder="อีเมล (ไม่บังคับ)" 
-                    value={newStaffEmail}
-                    onChange={(e) => setNewStaffEmail(e.target.value)}
-                  />
-                </div>
+
+              {/* ปุ่มเปิด modal เพิ่มพนักงาน */}
+              <div className="mb-6">
                 <button
                   className="btn bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={createStaff}
-                  disabled={!newStaffName.trim() || !newStaffPhone.trim()}
+                  onClick={() => setShowAddStaffModal(true)}
                 >
                   เพิ่มพนักงาน
                 </button>
               </div>
+
+              {/* Modal เพิ่มพนักงาน */}
+              {showAddStaffModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                  <div className="bg-white p-6 rounded-lg w-full max-w-lg">
+                    <h3 className="text-lg font-medium mb-4">เพิ่มพนักงานใหม่</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder="ชื่อพนักงาน"
+                        value={newStaffName}
+                        onChange={(e) => setNewStaffName(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder="เบอร์โทร"
+                        value={newStaffPhone}
+                        onChange={(e) => setNewStaffPhone(e.target.value)}
+                      />
+                      <input
+                        type="email"
+                        className="input"
+                        placeholder="อีเมล (ไม่บังคับ)"
+                        value={newStaffEmail}
+                        onChange={(e) => setNewStaffEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        className="btn bg-blue-600 text-white hover:bg-blue-700"
+                        onClick={async () => {
+                          await createStaff();
+                          setShowAddStaffModal(false);
+                        }}
+                        disabled={!newStaffName.trim() || !newStaffPhone.trim()}
+                      >
+                        บันทึก
+                      </button>
+                      <button
+                        className="btn border"
+                        onClick={() => {
+                          setShowAddStaffModal(false);
+                          setNewStaffName("");
+                          setNewStaffPhone("");
+                          setNewStaffEmail("");
+                        }}
+                      >
+                        ยกเลิก
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {editingStaffId && (
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
