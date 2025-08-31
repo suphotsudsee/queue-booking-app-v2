@@ -48,6 +48,13 @@ export default function Admin() {
   const [newStaffPhone, setNewStaffPhone] = useState("");
   const [newStaffEmail, setNewStaffEmail] = useState("");
 
+  // State สำหรับฟอร์มแก้ไขพนักงาน
+  const [editingStaffId, setEditingStaffId] = useState<number | null>(null);
+  const [editStaffName, setEditStaffName] = useState("");
+  const [editStaffPhone, setEditStaffPhone] = useState("");
+  const [editStaffEmail, setEditStaffEmail] = useState("");
+  const [editStaffIsActive, setEditStaffIsActive] = useState(true);
+
   useEffect(() => {
     const t = localStorage.getItem("jwt");
     if (t) setToken(t);
@@ -291,6 +298,14 @@ export default function Admin() {
       setMsg(`❌ ${errorMsg}`);
       console.error("อัปเดตพนักงานล้มเหลว:", errorMsg);
     }
+  };
+
+  const startEditStaff = (person: any) => {
+    setEditingStaffId(person.id);
+    setEditStaffName(person.name);
+    setEditStaffPhone(person.phone || "");
+    setEditStaffEmail(person.email || "");
+    setEditStaffIsActive(person.is_active);
   };
 
   const deleteStaff = async (id: number) => {
@@ -793,14 +808,74 @@ export default function Admin() {
                     onChange={(e) => setNewStaffEmail(e.target.value)}
                   />
                 </div>
-                <button 
-                  className="btn bg-blue-600 text-white hover:bg-blue-700" 
+                <button
+                  className="btn bg-blue-600 text-white hover:bg-blue-700"
                   onClick={createStaff}
                   disabled={!newStaffName.trim() || !newStaffPhone.trim()}
                 >
                   เพิ่มพนักงาน
                 </button>
               </div>
+
+              {editingStaffId && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h3 className="text-lg font-medium mb-4">แก้ไขพนักงาน</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="ชื่อพนักงาน"
+                      value={editStaffName}
+                      onChange={(e) => setEditStaffName(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="เบอร์โทร"
+                      value={editStaffPhone}
+                      onChange={(e) => setEditStaffPhone(e.target.value)}
+                    />
+                    <input
+                      type="email"
+                      className="input"
+                      placeholder="อีเมล (ไม่บังคับ)"
+                      value={editStaffEmail}
+                      onChange={(e) => setEditStaffEmail(e.target.value)}
+                    />
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={editStaffIsActive}
+                        onChange={(e) => setEditStaffIsActive(e.target.checked)}
+                      />
+                      <span>พร้อมใช้งาน</span>
+                    </label>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      className="btn bg-blue-600 text-white hover:bg-blue-700"
+                      onClick={() => {
+                        updateStaff(editingStaffId!, {
+                          name: editStaffName,
+                          phone: editStaffPhone,
+                          email: editStaffEmail,
+                          is_active: editStaffIsActive,
+                        });
+                        setEditingStaffId(null);
+                      }}
+                      disabled={!editStaffName.trim() || !editStaffPhone.trim()}
+                    >
+                      บันทึก
+                    </button>
+                    <button
+                      className="btn border"
+                      onClick={() => setEditingStaffId(null)}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* รายการพนักงานที่มีอยู่ */}
               <div className="space-y-4">
@@ -823,16 +898,13 @@ export default function Admin() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <button 
+                        <button
                           className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
-                          onClick={() => {
-                            // TODO: Implement edit functionality
-                            setMsg("ฟีเจอร์แก้ไขจะมาเร็วๆ นี้");
-                          }}
+                          onClick={() => startEditStaff(person)}
                         >
                           แก้ไข
                         </button>
-                        <button 
+                        <button
                           className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
                           onClick={() => deleteStaff(person.id)}
                         >
