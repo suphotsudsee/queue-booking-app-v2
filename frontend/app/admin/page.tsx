@@ -724,33 +724,38 @@ export default function Admin() {
                 {services.length === 0 ? (
                   <p className="text-gray-500 text-center py-8">ยังไม่มีบริการ</p>
                 ) : (
-                  services.map((service) => (
-                    <div key={service.id} className="flex justify-between items-center p-4 border rounded-lg bg-white">
-                      <div className="flex-1">
-                        <div className="font-medium text-lg">{service.name}</div>
-                        {service.description && (
-                          <div className="text-gray-600 text-sm">{service.description}</div>
-                        )}
-                        <div className="text-sm text-gray-500 mt-1">
-                          ระยะเวลา: {service.duration_minutes} นาที | ราคา: ฿{service.price}
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {services.map((service) => (
+                      <div
+                        key={service.id}
+                        className="flex justify-between items-center p-4 border rounded-lg bg-white"
+                      >
+                        <div className="flex-1">
+                          <div className="font-medium text-lg">{service.name}</div>
+                          {service.description && (
+                            <div className="text-gray-600 text-sm">{service.description}</div>
+                          )}
+                          <div className="text-sm text-gray-500 mt-1">
+                            ระยะเวลา: {service.duration_minutes} นาที | ราคา: ฿{service.price}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
+                            onClick={() => startEditService(service)}
+                          >
+                            แก้ไข
+                          </button>
+                          <button
+                            className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
+                            onClick={() => deleteService(service.id)}
+                          >
+                            ลบ
+                          </button>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <button
-                          className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
-                          onClick={() => startEditService(service)}
-                        >
-                          แก้ไข
-                        </button>
-                        <button 
-                          className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
-                          onClick={() => deleteService(service.id)}
-                        >
-                          ลบ
-                        </button>
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
@@ -883,36 +888,41 @@ export default function Admin() {
                 {staff.length === 0 ? (
                   <p className="text-gray-500 text-center py-8">ยังไม่มีพนักงาน</p>
                 ) : (
-                  staff.map((person) => (
-                    <div key={person.id} className="flex justify-between items-center p-4 border rounded-lg bg-white">
-                      <div className="flex-1">
-                        <div className="font-medium text-lg">{person.name}</div>
-                        {person.phone && (
-                          <div className="text-gray-600 text-sm">เบอร์โทร: {person.phone}</div>
-                        )}
-                        {person.email && (
-                          <div className="text-gray-600 text-sm">อีเมล: {person.email}</div>
-                        )}
-                        <div className="text-sm text-gray-500 mt-1">
-                          สถานะ: {person.is_active ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน"}
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {staff.map((person) => (
+                      <div
+                        key={person.id}
+                        className="flex justify-between items-center p-4 border rounded-lg bg-white"
+                      >
+                        <div className="flex-1">
+                          <div className="font-medium text-lg">{person.name}</div>
+                          {person.phone && (
+                            <div className="text-gray-600 text-sm">เบอร์โทร: {person.phone}</div>
+                          )}
+                          {person.email && (
+                            <div className="text-gray-600 text-sm">อีเมล: {person.email}</div>
+                          )}
+                          <div className="text-sm text-gray-500 mt-1">
+                            สถานะ: {person.is_active ? "พร้อมใช้งาน" : "ไม่พร้อมใช้งาน"}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
+                            onClick={() => startEditStaff(person)}
+                          >
+                            แก้ไข
+                          </button>
+                          <button
+                            className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
+                            onClick={() => deleteStaff(person.id)}
+                          >
+                            ลบ
+                          </button>
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <button
-                          className="btn border bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm px-3 py-1"
-                          onClick={() => startEditStaff(person)}
-                        >
-                          แก้ไข
-                        </button>
-                        <button
-                          className="btn border bg-red-50 hover:bg-red-100 text-red-700 text-sm px-3 py-1"
-                          onClick={() => deleteStaff(person.id)}
-                        >
-                          ลบ
-                        </button>
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
