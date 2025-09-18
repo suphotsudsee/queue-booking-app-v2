@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from app.database import engine
 from app.models import Service, Staff, StaffService, StaffSchedule, BusinessHours
-from sqlmodel import Session, select
+from sqlmodel import SQLModel, Session, select
 from datetime import time, datetime, UTC
 
 def seed_business_hours():
@@ -128,8 +128,13 @@ def main():
     """ฟังก์ชันหลัก"""
     print("🚀 เริ่มต้นเพิ่มข้อมูลในฐานข้อมูล...")
     print("=" * 50)
-    
+
     try:
+        # สร้างตารางทั้งหมดหากยังไม่มี
+        print("🧱 ตรวจสอบและสร้างตารางฐานข้อมูล (ถ้ายังไม่มี)...")
+        SQLModel.metadata.create_all(engine)
+        print("✅ ตารางพร้อมใช้งาน")
+
         # ลบข้อมูลทั้งหมดก่อน (ตามลำดับ foreign key)
         print("🗑️  ลบข้อมูลเดิม...")
         with Session(engine) as session:
